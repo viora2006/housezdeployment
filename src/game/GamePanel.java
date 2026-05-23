@@ -1,5 +1,12 @@
 package game; // says it belongs withi the game folder
 
+// timer updates naturally by mouse movement as well as other natural means
+// so for menu purposes no need to implement new timers unless
+
+
+
+
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -17,10 +24,12 @@ int x = 100;
 int y = 100;
 int wallWidth = 75;
 int wallHeight = 54;
-int zombieskilled = 0;
+int zombieskilled = 0; // reset
+double menuPointerX;
+double menuPointerY;
+Font font = new Font("Arial", Font.BOLD, 60);
 double forward = 20 ;// toward gun direction
 double side = 10;    // right side of the player/gun
-
 double playerAngle;
 BufferedImage woodFloor;
 BufferedImage window;
@@ -33,11 +42,12 @@ BufferedImage phase2Fire;
 BufferedImage phase3Fire;
 BufferedImage phase4Fire;
 BufferedImage phase5Fire;
+BufferedImage gameOverBackground;
 int phaseOfCycle = 0;
-int playerSize = 30; // drawn however as 50 by 50
-int playerHealth = 100;
-int waveTimer = 0;
-long lastHitTime = 0;
+int playerSize = 30; // drawn however the character is drawn as 50 by 50, therefore movements are prohbited by such coordinates, this was done for hitbox purposes
+int playerHealth = 100; // 4 zombie hits = death //reset
+int waveTimer = 0; //
+long lastHitTime = 0;   // for invincibiity frames //reset
 ArrayList<Bullet> bullets = new ArrayList<>();
 ArrayList<Zombie> zombies = new ArrayList<>();
 ArrayList<Obstacle> obstacles = new ArrayList<>();
@@ -45,12 +55,18 @@ ArrayList<BufferedImage> fireCycle = new ArrayList<>();
 Timer timer;
 GamePanel panel = this;
 Timer zombieSpawner;
-Timer fireTimer;
-boolean roundOver = false;
-boolean gameOver = false;
-int maxZombies = 5;
-int numberOfZombiesToEndRound = 20;
-
+Timer fireTimer; // for fire animation
+boolean roundOver = false; //reset
+boolean gameOver = false; //reset
+int maxZombies = 5; // incrementing each round by 1 //reset to 5
+int numberOfZombiesToEndRound = 20; //increments by 10 // reset
+int numberOfZombiesSpawned = 0;
+int menuXClick;
+int menuYClick;
+int playAgainWidth ;
+int playAgainHeight;
+int exitTextWidth;
+int exitTextHeight;
 
 
 public int getPlayerX(){
@@ -79,6 +95,7 @@ public GamePanel(){
     packOfTreesSprite();
     grass();
     phasesOfFire();
+    gameOverBackground();
 
     fireCycle.add(phase1Fire);
     fireCycle.add(phase2Fire);
@@ -112,9 +129,10 @@ fireTimer.start();
     
      zombieSpawner = new Timer(1000, e-> {
         // zombie spawner with max 5 zombies at a time at start
-          if (zombies.size()<maxZombies) {
+          if (zombies.size()<maxZombies && numberOfZombiesSpawned < numberOfZombiesToEndRound) {
         zombies.add(new Zombie(x, y, panel));
         zombieSpawnSound();
+        numberOfZombiesSpawned++;
 
         }       
         if (zombieskilled >= numberOfZombiesToEndRound){
@@ -129,6 +147,7 @@ fireTimer.start();
         zombieSpawner.start();
         roundOver = false;
         playerHealth = 100;  // heal player
+        numberOfZombiesSpawned = 0;
         zombieskilled = 0;
         numberOfZombiesToEndRound +=10;
            });
@@ -249,8 +268,10 @@ fireTimer.start();
     );
 
 addMouseListener(new MouseAdapter() {
+    
     @Override
     public void mousePressed(MouseEvent e){
+        if (!gameOver){
     double centerX = x + 25;
     double centerY = y + 25;
 
@@ -272,7 +293,40 @@ addMouseListener(new MouseAdapter() {
 ));
     bulletSound();
 
+      }
+    
+    else {
+        menuXClick = e.getX();
+        menuYClick = e.getY();
 
+        // Reset Game
+        if ((int)menuXClick>=500 && (int)menuXClick<= playAgainWidth + 500 && (int)menuYClick>= 500 - playAgainHeight && (int)menuYClick<=500 ){
+                x = 100; //reset player coordinates to spawn
+                y = 100; 
+                zombieskilled = 0;
+                maxZombies = 5;
+                numberOfZombiesToEndRound = 20;
+                playerAngle =0;
+                playerHealth = 100;
+                menuXClick = 0;
+                menuYClick = 0;
+                phaseOfCycle = 0;
+                roundOver = false;
+                gameOver = false;
+                lastHitTime = 0;
+                numberOfZombiesSpawned = 0;
+                zombies.clear();
+                bullets.clear();
+                turnOnTimers();
+                repaint();
+                requestFocusInWindow(); //give ownership of keyboard back
+        }
+        // leave game
+        else if((int)menuXClick >= 1000 && (int)menuXClick<= exitTextWidth + 1000 && (int)menuYClick >= 500 - exitTextHeight && (int)menuYClick<= 500){
+            System.exit(0);
+        }
+            
+    }
 
 
     }
@@ -286,8 +340,14 @@ addMouseMotionListener(new MouseMotionAdapter() {
         double dx = e.getX() - (x + 25);
         double dy = e.getY() - (y + 25);
 
+        if (!gameOver){
         playerAngle = Math.atan2(dy, dx);
-
+        }
+        else {
+            menuPointerX = e.getX();
+            menuPointerY = e.getY();
+        }
+        
         repaint();
     }
 });
@@ -295,6 +355,21 @@ addMouseMotionListener(new MouseMotionAdapter() {
 
 
 }
+// end Of GamePanel instance
+
+
+
+
+
+
+
+
+
+
+
+// ALL HELPER METHODS BELOW
+//===================================================================================================================================================================
+
 
 @Override
 protected void paintComponent(Graphics g){
@@ -400,10 +475,9 @@ g2.setTransform(old);
     
 }
 else {
-    while (true){  // begin implementing replayability
-    // print out game overscreen 
+    g.drawImage(gameOverBackground, 0, 0, 1920, 1080, null);
     playerDiedScreen(g);
-    }
+
 }
 
 
@@ -523,13 +597,43 @@ public void checkIfPlayerHasBeenHit(){
 }
 
 public void playerDiedScreen(Graphics g){
+    g.setFont(font); //initialized at top of program for gameOverScreen
     g.setColor(Color.RED);
     g.setFont(new Font("Arial", Font.BOLD, 60));
-    g.drawString("GAME OVER", 750, 350); 
+    FontMetrics metrics = g.getFontMetrics(font);
+    String playAgainText = "Play Again?";
+     playAgainWidth = metrics.stringWidth(playAgainText);
+     playAgainHeight = metrics.getHeight();
 
-    g.drawString("Play Again?", 500, 500);
-    g.drawString("Exit Game", 1000, 500);
+    String exitText = "Exit Game";
 
+    exitTextWidth = metrics.stringWidth(exitText);
+    exitTextHeight = metrics.getHeight();
+
+
+
+    g.drawString("Game Over!", 750, 350); 
+    // hovering over "play again?""
+    if ((int)menuPointerX>=500 && (int)menuPointerX<= playAgainWidth + 500 && (int)menuPointerY>= 500 - playAgainHeight && (int)menuPointerY<=500){
+        g.drawString(exitText, 1000, 500);
+        g.setColor(Color.BLACK);
+        g.drawString(playAgainText, 504, 504);
+        g.setColor(Color.RED);
+        g.drawString(playAgainText, 500, 500);
+    }
+
+    else if((int)menuPointerX >= 1000 && (int)menuPointerX<= exitTextWidth + 1000 && (int)menuPointerY >= 500 - exitTextHeight && (int)menuPointerY<= 500){
+         g.drawString(playAgainText, 500, 500);
+         g.setColor(Color.BLACK);
+         g.drawString(exitText, 1004, 504);
+         g.setColor(Color.RED);
+         g.drawString(exitText, 1000, 500);
+    }
+
+    else {
+    g.drawString(playAgainText, 500, 500);
+    g.drawString(exitText, 1000, 500);
+    }
 }
 
 public void turnOffTimers(){
@@ -539,6 +643,14 @@ public void turnOffTimers(){
     
    
 }
+
+public void turnOnTimers(){
+    zombieSpawner.start();
+    timer.start();
+    fireTimer.start();
+    
+}
+
 
 public void bulletSound(){
     try {
@@ -662,6 +774,15 @@ public void phasesOfFire(){
 
 
    }
+
+    catch (Exception e){
+        e.printStackTrace();
+    }
+
+}
+
+public void gameOverBackground(){
+   try{ gameOverBackground = ImageIO.read(getClass().getResource("/gameOverBackGround.png")); }
 
     catch (Exception e){
         e.printStackTrace();
