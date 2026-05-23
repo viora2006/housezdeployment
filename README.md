@@ -45,16 +45,7 @@ Built modular classes for:
 - UI/Game States
 This structure improved maintainability and scalability during development.
 ---
-## What I Learned
-Through HouseZ, I gained hands-on experience with:
-- Real-time game loops
-- Event-driven programming
-- State management
-- Low-level debugging and collision logic
-- Timer synchronization
-- Object-oriented software design
-- Managing complexity in larger Java projects
----
+
 ## Future Improvements
 Potential future additions include:
 - Pathfinding AI
@@ -64,9 +55,6 @@ Potential future additions include:
 - Animation systems
 - Entity Component System (ECS) architecture
 - Performance optimization for larger enemy counts
----
-## Screenshots
-(Add gameplay screenshots here)
 ---
 ## Author
 Tyler Carrasco

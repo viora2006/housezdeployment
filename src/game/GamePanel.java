@@ -69,6 +69,8 @@ int exitTextWidth;
 int exitTextHeight;
 
 
+
+
 public int getPlayerX(){
     return x;
 }
@@ -84,7 +86,7 @@ public GamePanel(){
     setFocusable(true);
     requestFocusInWindow();
     panel = this;                       //playerRight.png
-    try {playerSprite = ImageIO.read(getClass().getResource("/playerRight.png")) ;}
+    try {playerSprite = ImageIO.read(getClass().getResource("/resources/playerRight.png")) ;}
 
     catch (Exception e){
         e.printStackTrace();
@@ -124,9 +126,6 @@ public GamePanel(){
 });
 
 fireTimer.start();
-   
-  
-    
      zombieSpawner = new Timer(1000, e-> {
         // zombie spawner with max 5 zombies at a time at start
           if (zombies.size()<maxZombies && numberOfZombiesSpawned < numberOfZombiesToEndRound) {
@@ -298,6 +297,7 @@ addMouseListener(new MouseAdapter() {
     else {
         menuXClick = e.getX();
         menuYClick = e.getY();
+
 
         // Reset Game
         if ((int)menuXClick>=500 && (int)menuXClick<= playAgainWidth + 500 && (int)menuYClick>= 500 - playAgainHeight && (int)menuYClick<=500 ){
@@ -505,7 +505,7 @@ public void roundOverSound(){
 
         AudioInputStream audio =
         AudioSystem.getAudioInputStream(
-       getClass().getResource("/RoundOver.wav")
+       getClass().getResource("/resources/RoundOver.wav")
         );
 
         Clip clip = AudioSystem.getClip();
@@ -527,7 +527,7 @@ public void zombieSpawnSound(){
 
         AudioInputStream audio =
         AudioSystem.getAudioInputStream(
-       getClass().getResource("/zombieSound.wav")
+       getClass().getResource("/resources/zombieSound.wav")
         );
 
         Clip clip = AudioSystem.getClip();
@@ -552,7 +552,7 @@ public void playerDamageSound(){
 
         AudioInputStream audio =
         AudioSystem.getAudioInputStream(
-       getClass().getResource("/playerDamageSound.wav")
+       getClass().getResource("/resources/playerDamageSound.wav")
         );
 
         Clip clip = AudioSystem.getClip();
@@ -657,7 +657,7 @@ public void bulletSound(){
 
     AudioInputStream audio =
         AudioSystem.getAudioInputStream(
-            getClass().getResource("/pistolSoundUpdated.wav")
+            getClass().getResource("/resources/pistolSoundUpdated.wav")
         );
 
     Clip clip = AudioSystem.getClip();
@@ -673,7 +673,7 @@ public void bulletSound(){
 }
 
 public void wallSprite(){
-   try{ walls = ImageIO.read(getClass().getResource("/newSmallWalls.png")); }
+   try{ walls = ImageIO.read(getClass().getResource("/resources/newSmallWalls.png")); }
 
     catch (Exception e){
         e.printStackTrace();
@@ -682,7 +682,7 @@ public void wallSprite(){
 }
 
 public void windowSprite(){
-   try{ window = ImageIO.read(getClass().getResource("/window.png")); }
+   try{ window = ImageIO.read(getClass().getResource("/resources/window.png")); }
 
     catch (Exception e){
         e.printStackTrace();
@@ -691,7 +691,7 @@ public void windowSprite(){
 }
 
 public void woodFloor(){
-   try{ woodFloor = ImageIO.read(getClass().getResource("/woodFloor.png")); 
+   try{ woodFloor = ImageIO.read(getClass().getResource("/resources/WoodFloor.png")); 
     RescaleOp op = new RescaleOp(
             0.8f, // darker
             0,
@@ -711,7 +711,7 @@ public void bulletHitWoodSound(){
 
         AudioInputStream audio =
         AudioSystem.getAudioInputStream(
-        getClass().getResource("/bulletHittingWood.wav")
+        getClass().getResource("/resources/bulletHittingWood.wav")
         );
 
         Clip clip = AudioSystem.getClip();
@@ -730,7 +730,7 @@ public void fleshSound(){
 
         AudioInputStream audio =
         AudioSystem.getAudioInputStream(
-       getClass().getResource("/fleshSound.wav")
+       getClass().getResource("/resources/fleshSound.wav")
         );
 
         Clip clip = AudioSystem.getClip();
@@ -746,7 +746,7 @@ public void fleshSound(){
 
 
 public void packOfTreesSprite(){
-   try{ packOfTrees = ImageIO.read(getClass().getResource("/outsidePackOfTrees.png")); }
+   try{ packOfTrees = ImageIO.read(getClass().getResource("/resources/outsidePackOfTrees.png")); }
 
     catch (Exception e){
         e.printStackTrace();
@@ -756,7 +756,7 @@ public void packOfTreesSprite(){
 
 
 public void grass(){
-   try{ grass = ImageIO.read(getClass().getResource("/gloomyGrass.png")); }
+   try{ grass = ImageIO.read(getClass().getResource("/resources/gloomyGrass.png")); }
 
     catch (Exception e){
         e.printStackTrace();
@@ -765,11 +765,11 @@ public void grass(){
 }
 
 public void phasesOfFire(){
-   try{ phase1Fire = ImageIO.read(getClass().getResource("/phase1FireTrial.png")); 
-    phase2Fire = ImageIO.read(getClass().getResource("/phase2trial.png"));
-     phase3Fire = ImageIO.read(getClass().getResource("/phase3trial.png"));
-      phase4Fire = ImageIO.read(getClass().getResource("/phase4trial.png"));
-       phase5Fire = ImageIO.read(getClass().getResource("/phase5trial.png"));
+   try{ phase1Fire = ImageIO.read(getClass().getResource("/resources/phase1FireTrial.png")); 
+    phase2Fire = ImageIO.read(getClass().getResource("/resources/phase2trial.png"));
+     phase3Fire = ImageIO.read(getClass().getResource("/resources/phase3trial.png"));
+      phase4Fire = ImageIO.read(getClass().getResource("/resources/phase4trial.png"));
+       phase5Fire = ImageIO.read(getClass().getResource("/resources/phase5trial.png"));
 
 
 
@@ -782,13 +782,14 @@ public void phasesOfFire(){
 }
 
 public void gameOverBackground(){
-   try{ gameOverBackground = ImageIO.read(getClass().getResource("/gameOverBackGround.png")); }
+   try{ gameOverBackground = ImageIO.read(getClass().getResource("/resources/gameOverBackGround.png")); }
 
     catch (Exception e){
         e.printStackTrace();
     }
 
 }
+
 
 
 

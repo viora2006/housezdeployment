@@ -116,7 +116,7 @@ public Point randomSpawn(){
 
 public void readZombieSprite(){
     try {
-        zombieSprite = ImageIO.read( getClass().getResource("/zombieSprite.png"));
+        zombieSprite = ImageIO.read( getClass().getResource("/resources/zombieSprite.png"));
     }
     catch (Exception e) {
         e.printStackTrace();
